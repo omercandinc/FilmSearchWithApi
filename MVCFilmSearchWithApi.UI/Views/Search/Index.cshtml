@@ -1,0 +1,111 @@
+﻿@using MVCFilmSearchWithApi.UI.Models
+@model List<FilmModel>
+@{
+    ViewBag.Title = "Index";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    form.example input[type=text] {
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid grey;
+        float: left;
+        width: 80%;
+        background: #f1f1f1;
+    }
+
+    form.example button {
+        float: left;
+        width: 20%;
+        padding: 10px;
+        background: #2196F3;
+        color: white;
+        font-size: 17px;
+        border: 1px solid grey;
+        border-left: none;
+        cursor: pointer;
+    }
+
+        form.example button:hover {
+            background: #0b7dda;
+        }
+
+    form.example::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+</style>
+<h2>Search Film With API</h2>
+
+<div class="form-horizontal">
+    <hr />
+
+    <input type="text" placeholder="Search.." name="txtTitle" id="txtTitle">
+    <button type="submit" onclick="GetFilm()"><i class="fa fa-search"></i></button>
+    <br />
+    <hr />
+    <div class="form-group">
+        <div>
+            <table class="flexme" id="table" border="1">
+                <thead>
+                    <tr>
+                        <th width="100">Title</th>
+                        <th width="100">Year</th>
+                        <th width="100">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="test">
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function GetFilm() {
+        var titleValue = document.getElementById("txtTitle").value;
+            $.ajax({
+                url: '@Url.Action("GetMovieByName", "Search")',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    Title: titleValue},
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        var len = data.Model.length;
+                        for (var i = 0; i < len; i++) {
+                            var title = data.Model[i].Title;
+                            var year = data.Model[i].Year;
+                            var type = data.Model[i].Type;
+                            $('#table tbody').append('<tr><td>' + title + '</td><td>' + year + '</td><td>' + type + '</td></tr>')
+                        }
+                    }
+                    else {
+                        alert(data.Message);
+                    }
+                    
+                },
+                error: function (error) {
+
+                }
+            });
+        };
+
+</script>
+
+
+
